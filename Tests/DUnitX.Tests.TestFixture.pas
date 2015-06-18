@@ -99,6 +99,28 @@ type
   end;
   {$M-}
 
+
+  {$M+}
+  [TestFixture]
+  TTestCaseFloat = class
+  private
+  public
+    [Test(false)]
+    [TestCase('SumFloat', 'a,b,c')]
+    procedure SumFloatFalsePositiveWhenUseFloatToStrDef(const A, B, Expected: Extended);
+
+    [Test]
+    [TestCase('SumFloat', '1,5|2,5|4', '|')]
+    [TestCase('SumFloat', '1,5|2,6|4,1', '|')]
+    procedure SumFloatUsingColonAsDecimalSeparator(const A, B, Expected: Extended);
+
+    [Test]
+    [TestCase('SumFloat', '1.5, 2.5, 4')]
+    [TestCase('SumFloat', '1.5, 2.6, 4.1')]
+    procedure SumFloatUsingDotAsDecimalSeparator(const A, B, Expected: Extended);
+  end;
+  {$M-}
+
 implementation
 
 uses
@@ -190,6 +212,29 @@ begin
   Assert.AreEqual(TIMES_RUN, _TimesRun, 'TimesRun');
   Assert.AreEqual(TIMES_RUN_ANYWAY, _TimesRunAnyWay, 'TimesRunAnyway');
   Assert.AreEqual(TIMES_RUN_TEST_CASE, _TimesRunTestCase, 'TimesRunTestCase');
+end;
+
+{ TTestCaseFloat }
+
+procedure TTestCaseFloat.SumFloatFalsePositiveWhenUseFloatToStrDef(const A, B, Expected: Extended);
+begin
+  Assert.AreEqual(Expected, A + B);
+end;
+
+procedure TTestCaseFloat.SumFloatUsingColonAsDecimalSeparator(const A, B, Expected: Extended);
+begin
+  Assert.AreNotEqual(0.0, A);
+  Assert.AreNotEqual(0.0, B);
+  Assert.AreNotEqual(0.0, Expected);
+  Assert.AreEqual(Expected, A + B);
+end;
+
+procedure TTestCaseFloat.SumFloatUsingDotAsDecimalSeparator(const A, B, Expected: Extended);
+begin
+  Assert.AreNotEqual(0.0, A);
+  Assert.AreNotEqual(0.0, B);
+  Assert.AreNotEqual(0.0, Expected);
+  Assert.AreEqual(Expected, A + B);
 end;
 
 initialization
